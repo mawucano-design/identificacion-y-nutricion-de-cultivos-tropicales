@@ -96,16 +96,16 @@ def simulate_palm_detection(image_size=(800, 600), num_palms=25):
 if st.session_state.state.current_page == "📊 Dashboard":
     st.header("Dashboard de Monitoreo")
     
-    # Métricas
+    # Métricas CORREGIDAS (sin 'key')
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Palmas Monitoreadas", "1,247", "+12", key="metric1")
+        st.metric("Palmas Monitoreadas", "1,247", "+12")
     with col2:
-        st.metric("Tasa de Estrés", "8.2%", "-2.1%", key="metric2")
+        st.metric("Tasa de Estrés", "8.2%", "-2.1%")
     with col3:
-        st.metric("Distancia Promedio", "7.8m", "Óptima", key="metric3")
+        st.metric("Distancia Promedio", "7.8m", "Óptima")
     with col4:
-        st.metric("NDVI Promedio", "0.74", "+0.03", key="metric4")
+        st.metric("NDVI Promedio", "0.74", "+0.03")
     
     # Gráficos
     col1, col2 = st.columns(2)
@@ -116,7 +116,7 @@ if st.session_state.state.current_page == "📊 Dashboard":
             'Cantidad': [650, 450, 120, 27]
         })
         fig = px.pie(health_data, values='Cantidad', names='Estado')
-        st.plotly_chart(fig, use_container_width=True, key="pie1")
+        st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         st.subheader("Tendencia NDVI")
@@ -124,7 +124,7 @@ if st.session_state.state.current_page == "📊 Dashboard":
         ndvi_trend = [0.72, 0.73, 0.74, 0.72, 0.71, 0.70, 0.69, 0.68, 0.70, 0.72, 0.73, 0.74]
         fig = px.line(x=dates, y=ndvi_trend, title="NDVI Semanal")
         fig.update_layout(xaxis_title="Fecha", yaxis_title="NDVI")
-        st.plotly_chart(fig, use_container_width=True, key="line1")
+        st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.state.current_page == "🛰️ Cargar Datos":
     st.header("Carga de Datos Multiespectrales")
@@ -157,10 +157,10 @@ elif st.session_state.state.current_page == "🔍 Detección":
     else:
         col1, col2 = st.columns(2)
         with col1:
-            num_palms = st.slider("Número de palmas a simular", 5, 50, 25)
+            num_palms = st.slider("Número de palmas a simular", 5, 50, 25, key="palm_slider")
         
         with col2:
-            if st.button("Simular Detección"):
+            if st.button("Simular Detección", key="detect_btn"):
                 with st.spinner("Simulando detección de palmas..."):
                     try:
                         # Usar simulación en lugar de OpenCV
@@ -181,7 +181,7 @@ elif st.session_state.state.current_page == "🔍 Detección":
             fig = px.scatter(df_palms, x='x', y='y', size='area', 
                            title="Distribución de Palmeras Detectadas (Simulación)", 
                            hover_data=['id'], color='area')
-            st.plotly_chart(fig, use_container_width=True, key="scatter1")
+            st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.state.current_page == "📈 Análisis":
     st.header("Análisis de Series Temporales")
@@ -210,7 +210,7 @@ elif st.session_state.state.current_page == "📈 Análisis":
     df = pd.DataFrame(data)
     
     # Selector de palma
-    selected_palm = st.selectbox("Seleccionar Palma para Análisis", palm_ids, key="palm_selector")
+    selected_palm = st.selectbox("Seleccionar Palma para Análisis", palm_ids)
     palm_data = df[df['palm_id'] == selected_palm]
     
     # Gráfico de series temporales
@@ -234,7 +234,7 @@ elif st.session_state.state.current_page == "📈 Análisis":
         height=400
     )
     
-    st.plotly_chart(fig, use_container_width=True, key="ndvi_chart")
+    st.plotly_chart(fig, use_container_width=True)
     
     # Análisis de tendencia
     st.subheader("Análisis de Tendencia")
@@ -246,7 +246,7 @@ elif st.session_state.state.current_page == "📈 Análisis":
         st.metric("NDVI Actual", f"{current_ndvi:.3f}")
     with col2:
         trend_icon = "📈" if trend > 0 else "📉"
-        st.metric("Tendencia", f"{trend:.4f}/semana", delta=trend_icon)
+        st.metric("Tendencia", f"{trend:.4f}/semana")
     with col3:
         if current_ndvi > 0.7:
             status = "🟢 Óptimo"
@@ -298,7 +298,7 @@ elif st.session_state.state.current_page == "⚠️ Alertas":
             """, unsafe_allow_html=True)
     
     # Botón para generar reporte
-    if st.button("Generar Reporte de Alertas"):
+    if st.button("Generar Reporte de Alertas", key="report_btn"):
         st.download_button(
             label="📥 Descargar Reporte CSV",
             data=pd.DataFrame(alertas).to_csv(index=False),
@@ -355,7 +355,7 @@ elif st.session_state.state.current_page == "🗺️ Mapa":
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     
-    st.plotly_chart(fig, use_container_width=True, key="map1")
+    st.plotly_chart(fig, use_container_width=True)
     
     # Estadísticas del mapa
     st.subheader("Estadísticas de Distribución")
